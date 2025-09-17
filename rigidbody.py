@@ -6,55 +6,61 @@ class RigidBody:
     def __init__(self,
         x,                       # [m] position
         mass  = 1,               # [kg] mass
+        L     = 1,               # [kg m²] moment of interia
         v0    = Vec2(),          # [m s⁻¹] initial velocity
+        θ     = 0,               # [rad] angular position
+        ω0    = 0,               # [rad s⁻¹] initial angular velocity
         color = (255, 255, 255), # color; white
         batch = None,
     ):
         # kinetics
         self.x  = x  # [m] position
-        self.x0 = x  # [m] previous position
         self.v  = v0 # [m s⁻¹] velocity
         self.a  = 0  # [m s⁻²] acceleration
 
+        self.Θ  = 0  # [rad] angular position
+        self.ω  = ω0 # [rad s⁻¹] angular velocity
+        self.α  = 0  # [rad s⁻²] angular acceleration
+
         self.m   = mass     # [kg] mass
         self.m_i = 1 / mass # [kg⁻¹] reciprocal of mass
+        self.L   = L        # [kg m²] moment of interia
+        self.L_i = 1 / L    # [kg⁻¹ m⁻²] reciprocal of moment of interia
 
         # properties
-        self.cor = 1  # coefficient of restitution
+        # self.cor = 1  # coefficient of restitution
 
         self.color = color
         self.shape = None  # note: change this to the shape in inherited class
 
+    def assign_batch(self, batch):
+        self.shape.batch = batch
 
     def apply_forces(self,
-            *forces, # [N] the forces to apply
-        ):
+        *forces, # [N] the forces to apply
+    ):
         if not forces: return
         # find net force and add
-        self.a = self.a + sum(forces) * self.m_i
+        self.a = self.a + self.m_i * sum(forces)
 
-    
+    def apply_torques(self,
+        *torques, # [N m] the torques to apply
+    ):
+        if not torques: return
+        self.α = self.α + self.L_i * sum(torques)
+
+
     def update(self,
         dt, # [s] tiny change in time
     ):
-        # save the position
-        save_x = self.x
-        # update position with the previous position (why?)
-        self.x = self.x + (self.x - self.x0)
-        # implicit euler's method amiright (future: implement runge-kutta)
-        # in simple words: multiply by dt to remove the time term (kinematics i guess)
-        # [m s⁻¹] = [m s⁻²] × [s]
-        # [m]     = [m s⁻¹] × [s]
-        self.v = self.v + self.a.scale(dt)
-        self.x = self.x + self.v.scale(dt)
-        # set previous position to the saved (unupdated) position
-        self.x0 = save_x
+        # implicit euler's method (TODO: implement rk4)
+        # numeric integration
+        self.v = self.v + dt * self.a
+        self.x = self.x + dt * self.v
 
         # reset acceleration
         self.a = Vec2()
 
-        # note: update the shapes in the inherited class
-
 
     # NotImplemented stuff, the children should implement it
-    collide = collide_border = draw = lambda self: 1 / 0  # divide by zero to raise exception lol
+    rigidbody_collide = border_collide = update_shape = lambda self: 1 / 0  # divide by zero to raise exception lol
