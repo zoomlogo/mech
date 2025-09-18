@@ -11,7 +11,7 @@ class RigidBody:
         θ     = 0,               # [rad] angular position
         ω0    = 0,               # [rad s⁻¹] initial angular velocity
         color = (255, 255, 255), # color; white
-        batch = None,
+        batch = None, *args, **kwargs
     ):
         # kinetics
         self.x  = x  # [m] position
@@ -53,7 +53,6 @@ class RigidBody:
     def update(self,
         dt, # [s] tiny change in time
     ):
-        # implicit euler's method (TODO: implement rk4)
         # numeric integration
         self.v = self.v + dt * self.a
         self.x = self.x + dt * self.v
