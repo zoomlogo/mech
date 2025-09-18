@@ -53,9 +53,9 @@ class RigidBody:
     def update(self,
         dt, # [s] tiny change in time
     ):
-        # numeric integration
-        self.v = self.v + dt * self.a
-        self.x = self.x + dt * self.v
+        # velocity verlet integration
+        self.x = self.x + self.v * dt + self.a * dt**2 / 2
+        self.v = self.v + self.a * dt
 
         # reset acceleration
         self.a = Vec2()

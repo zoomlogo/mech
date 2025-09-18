@@ -57,7 +57,7 @@ class MainWindow(pyglet.window.Window):
 
         if not self.debug: return  # dont update debugging items if debug mode is off
 
-        self.net_energy_label.text = f'Total Energy = {energy} J.'
+        self.net_energy_label.text = f'Total Energy = {energy:.6f} J.'
 
     def add_body(self, body):
         # add a rigidbody
@@ -70,7 +70,7 @@ if __name__ == "__main__":
     win.add_body(ball.Ball(Vec2(512, 256), color=(123, 255, 120)))
 
     # run update
-    pyglet.clock.schedule_interval(win.update, 1 / 120)
+    pyglet.clock.schedule_interval(win.update, 1 / 60)
 
     # display the window and run the app
     pyglet.app.run()
