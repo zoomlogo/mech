@@ -46,6 +46,7 @@ class MainWindow(pyglet.window.Window):
         for body in self.bodies:
             body.apply_forces(body.m * self.GRAVITY)
             body.update(dt)
+            body.border_collide(self.width, self.height)
 
     def update_all_drawables(self):
         # update all positions / whatever of all drawables
@@ -67,7 +68,7 @@ class MainWindow(pyglet.window.Window):
 
 if __name__ == "__main__":
     win = MainWindow(1024, 512, "2D Mechanics Simulation")
-    win.add_body(ball.Ball(Vec2(512, 256), color=(123, 255, 120)))
+    win.add_body(ball.Ball(Vec2(512, 256), radius=10, color=(123, 255, 120)))
 
     # run update
     pyglet.clock.schedule_interval(win.update, 1 / 60)

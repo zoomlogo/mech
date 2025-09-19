@@ -18,7 +18,7 @@ class RigidBody:
         self.v  = v0 # [m s⁻¹] velocity
         self.a  = 0  # [m s⁻²] acceleration
 
-        self.Θ  = 0  # [rad] angular position
+        self.θ  = 0  # [rad] angular position
         self.ω  = ω0 # [rad s⁻¹] angular velocity
         self.α  = 0  # [rad s⁻²] angular acceleration
 
@@ -53,13 +53,30 @@ class RigidBody:
     def update(self,
         dt, # [s] tiny change in time
     ):
+        self.pre_update(dt)
         # velocity verlet integration
         self.x = self.x + self.v * dt + self.a * dt**2 / 2
         self.v = self.v + self.a * dt
 
+        # angular velocity verlet integration
+        self.θ = self.θ + self.ω * dt + self.α * dt**2 / 2
+        self.ω = self.ω + self.α * dt**2 / 2
+
         # reset acceleration
         self.a = Vec2()
+        self.post_update(dt)
 
+    def pre_update(self, dt):
+        pass
 
-    # NotImplemented stuff, the children should implement it
-    rigidbody_collide = border_collide = update_shape = lambda self: 1 / 0  # divide by zero to raise exception lol
+    def post_update(self, dt):
+        pass
+
+    def rigidbody_collide(self, other):
+        raise NotImplemented
+
+    def border_collide(self, width, height):
+        raise NotImplemented
+
+    def update_shape(self):
+        raise NotImplemented
