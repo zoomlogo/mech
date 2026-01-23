@@ -48,11 +48,19 @@ class MainWindow(pyglet.window.Window):
             body.update(dt)
             body.border_collide(self.width, self.height)
 
+            # collide with other bodies
+            for other in self.bodies:
+                if other == body: continue
+                body.rigidbody_collide(other)
+
     def update_all_drawables(self):
         # update all positions / whatever of all drawables
         energy = 0
         for body in self.bodies:
             body.update_shape()
+
+            # calculations for debugging
+            if not self.debug: continue
             energy += body.m * body.v.length_squared() / 2  # Kinetic Energy
             energy += body.m * body.x.y * -self.GRAVITY.y  # Potential Energy
 
@@ -69,6 +77,7 @@ class MainWindow(pyglet.window.Window):
 if __name__ == "__main__":
     win = MainWindow(1024, 512, "2D Mechanics Simulation")
     win.add_body(ball.Ball(Vec2(512, 256), radius=10, color=(123, 255, 120)))
+    win.add_body(ball.Ball(Vec2(256, 256), radius=10, color=(255, 123, 120), v0=Vec2(50, 0)))
 
     # run update
     pyglet.clock.schedule_interval(win.update, 1 / 60)

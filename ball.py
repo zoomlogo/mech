@@ -34,4 +34,24 @@ class Ball(RigidBody):
             self.ball_collide(other)
 
     def ball_collide(self, other):
-        pass
+        ε = other.x - self.x
+        δ = ε.length()
+        n = ε.normalize()
+
+        if δ <= self.radius + other.radius:
+            correction = self.radius + other.radius - δ
+            self.x += -n * correction / 2
+            other.x += n * correction / 2
+            # Collision occured, do math.
+            # Momentum is conserved: p₁ + p₂ = p₃ + p₄.
+            # Along line of impact, i.e. n: velocity of separation = velocity of approach.
+            # Solving:
+            u1 = self.v.dot(n)
+            u2 = other.v.dot(n)
+            if u1 - u2 < 0: return
+
+            v1 = (u1 * (self.m - other.m) + 2 * other.m * u2) / (self.m + other.m)
+            v2 = (u2 * (other.m - self.m) + 2 * self.m * u1) / (self.m + other.m)
+
+            self.v += n * (v1 - u1)
+            other.v += n * (v2 - u2)
