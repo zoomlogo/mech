@@ -3,7 +3,7 @@ import pyglet
 
 import ball
 
-class MainWindow(pyglet.window.Window):
+class Engine(pyglet.window.Window):
     # some constants
     GRAVITY = Vec2(0, -9.80667)
 
@@ -75,9 +75,10 @@ class MainWindow(pyglet.window.Window):
 
 
 if __name__ == "__main__":
-    win = MainWindow(1024, 512, "2D Mechanics Simulation")
+    win = Engine(1024, 512, "2D Mechanics Simulation")
     win.add_body(ball.Ball(Vec2(512, 256), radius=10, color=(123, 255, 120)))
     win.add_body(ball.Ball(Vec2(256, 256), radius=10, color=(255, 123, 120), v0=Vec2(50, 0)))
+    win.add_body(ball.Ball(Vec2(512, 284), radius=10, color=(120, 123, 255)))
 
     # run update
     pyglet.clock.schedule_interval(win.update, 1 / 60)
